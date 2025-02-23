@@ -1,0 +1,82 @@
+<!-- src/app/features/inventario/components/inventario-lista/inventario-lista.component.html -->
+<div class="p-grid p-justify-center p-mt-3">
+  <div class="p-col-12">
+    <div class="card p-shadow-3 p-p-3">
+      <!-- Header con título y botón de nuevo -->
+      <div class="p-d-flex p-ai-center p-jc-between p-mb-3">
+        <h2>Inventario</h2>
+        <button pButton type="button" label="Nuevo Producto" icon="pi pi-plus" class="p-button-success" routerLink="/inventario/productos/nuevo"></button>
+      </div>
+
+      <!-- Filtros -->
+      <div class="p-grid p-formgrid p-fluid p-mb-3">
+        <div class="p-field p-col-12 p-md-4">
+          <label for="categoria">Categoría</label>
+          <p-dropdown inputId="categoria"
+                      [(ngModel)]="filtroCategoria"
+                      [options]="categoriasOptions"
+                      placeholder="Todas las categorías">
+          </p-dropdown>
+        </div>
+        <div class="p-field p-col-12 p-md-4">
+          <label for="ubicacion">Ubicación</label>
+          <p-dropdown inputId="ubicacion"
+                      [(ngModel)]="filtroUbicacion"
+                      [options]="ubicacionesOptions"
+                      placeholder="Todas las ubicaciones">
+          </p-dropdown>
+        </div>
+        <div class="p-field p-col-12 p-md-4">
+          <label for="busqueda">Buscar Producto</label>
+          <input id="busqueda" type="text" pInputText [(ngModel)]="busqueda" placeholder="Buscar...">
+        </div>
+      </div>
+
+      <!-- Tabla de productos -->
+      <p-table [value]="productosFiltrados()">
+        <ng-template pTemplate="header">
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Stock</th>
+            <th>Precio Venta</th>
+            <th>Ubicación</th>
+            <th>Acciones</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-producto>
+          <tr>
+            <td><strong>{{ producto.codigo }}</strong></td>
+            <td>
+              {{ producto.nombre }}<br>
+              <small>{{ producto.subCategoria }}</small>
+            </td>
+            <td>{{ producto.categoria }}</td>
+            <td>
+              <span [ngClass]="{'text-danger': producto.stockActual <= producto.stockMinimo, 'fw-bold': producto.stockActual <= producto.stockMinimo}">
+                {{ producto.stockActual }}
+                <i *ngIf="producto.stockActual <= producto.stockMinimo" class="pi pi-exclamation-triangle p-text-warning"></i>
+              </span>
+            </td>
+            <td>{{ producto.precioVenta | currency }}</td>
+            <td>
+              <p-chip label="{{ producto.ubicacion }}" [class]="chipClass(producto.ubicacion)"></p-chip>
+            </td>
+            <td>
+              <div class="p-d-flex p-ai-center">
+                <button pButton type="button" icon="pi pi-pencil" class="p-button-rounded p-button-outlined p-mr-2" [routerLink]="['/inventario/productos/editar', producto.codigo]"></button>
+                <button pButton type="button" icon="pi pi-trash" class="p-button-rounded p-button-outlined p-button-danger" (click)="eliminarProducto(producto.codigo)"></button>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="7" class="p-text-center">No se encontraron productos</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+</div>
